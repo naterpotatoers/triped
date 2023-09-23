@@ -27,15 +27,18 @@ hal::status application(application_framework& p_framework)
   auto& console = *p_framework.console;
 
   hal::print(console, "Starting the triped\n");
-  auto pwm = HAL_CHECK((hal::lpc40::pwm::get(1, 1)));
+  auto pwm = HAL_CHECK((hal::lpc40::pwm::get(1, 1))); // P2.0
   HAL_CHECK(pwm.frequency(50.0_Hz));
 
   while (true) {
     HAL_CHECK(pwm.duty_cycle(convert_to_duty_cycle(180)));
+    hal::print(console, "180\n");
     hal::delay(clock, 1s);
     HAL_CHECK(pwm.duty_cycle(convert_to_duty_cycle(90)));
+    hal::print(console, "90\n");
     hal::delay(clock, 1s);
     HAL_CHECK(pwm.duty_cycle(convert_to_duty_cycle(0)));
+    hal::print(console, "0\n");
     hal::delay(clock, 1s);
   }
 }
