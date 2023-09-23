@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Copyright 2023 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,27 +17,30 @@ from conan.tools.cmake import CMake, cmake_layout
 from conan.errors import ConanInvalidConfiguration
 
 
-class demos(ConanFile):
+class application(ConanFile):
     settings = "compiler", "build_type", "os", "arch"
     generators = "CMakeToolchain", "CMakeDeps", "VirtualBuildEnv"
     options = {"platform": ["ANY"]}
     default_options = {"platform": "unspecified"}
 
+    def build_requirements(self):
+        self.tool_requires("libhal-cmake-util/[^1.0.0]")
+
+    def requirements(self):
+        # Application requirements
+        self.requires("libhal-util/[^3.0.0]")
+
+        # List of supported platforms
+        if str(self.options.platform).startswith("lpc40"):
+            self.requires("libhal-lpc40/[^2.0.0]")
+        else:
+            raise ConanInvalidConfiguration(
+                f"The platform '{str(self.options.platform)}' is not"
+                f"supported.")
+
     def layout(self):
         platform_directory = "build/" + str(self.options.platform)
         cmake_layout(self, build_folder=platform_directory)
-
-    def validate(self):
-        if self.settings.os != "baremetal":
-            raise ConanInvalidConfiguration(
-                f"Only baremetal OS is allowed here!")
-
-    def build_requirements(self):
-        self.tool_requires("cmake/3.27.1")
-        self.tool_requires("libhal-cmake-util/1.0.0")
-
-    def requirements(self):
-        self.requires("libhal-lpc40/2.1.3")
 
     def build(self):
         cmake = CMake(self)
