@@ -28,6 +28,7 @@ class application(ConanFile):
 
     def requirements(self):
         # Application requirements
+        self.requires("libhal-pca/2.0.0")
         self.requires("libhal-util/[^3.0.0]")
 
         # List of supported platforms

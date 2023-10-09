@@ -15,12 +15,14 @@
 #pragma once
 
 #include <libhal/functional.hpp>
+#include <libhal/i2c.hpp>
 #include <libhal/output_pin.hpp>
 #include <libhal/serial.hpp>
 #include <libhal/steady_clock.hpp>
 
 struct application_framework
 {
+  hal::i2c* i2c;
   hal::output_pin* led;
   hal::serial* console;
   hal::steady_clock* clock;
