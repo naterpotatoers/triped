@@ -12,7 +12,11 @@ nbPCAServo = 12
 # Parameters
 MIN_IMP = [500] * nbPCAServo
 MAX_IMP = [2500] * nbPCAServo
-ACTUATION_RANGE = [270, 270, 270, 270, 270, 270, 270, 270, 270, 270, 270, 270]
+ACTUATION_RANGE = [274, 276.5, 273.25, 276.5, 278, 275, 274.75, 277, 273, 275.75, 273.75, 277.5]
+SERVO_ZERO = [133, 138.5, 140, 136, 133.5, 144, 138.5, 139, 142, 143, 142, 131]
+
+
+RAD2DEG = 180.0 / 3.141592
 
 
 class PCA9685Driver(Node):
@@ -64,18 +68,22 @@ class PCA9685Driver(Node):
             ))
 
         # Send angles to PCA9685
-        self.pca.servo[0].angle = msg.leg_front_right.joint1_angle
-        self.pca.servo[1].angle = msg.leg_front_right.joint2_angle
-        self.pca.servo[2].angle = msg.leg_front_right.joint3_angle
-        self.pca.servo[3].angle = msg.leg_front_left.joint1_angle
-        self.pca.servo[4].angle = msg.leg_front_left.joint2_angle
-        self.pca.servo[5].angle = msg.leg_front_left.joint3_angle
-        self.pca.servo[6].angle = msg.leg_rear_left.joint1_angle
-        self.pca.servo[7].angle = msg.leg_rear_left.joint2_angle
-        self.pca.servo[8].angle = msg.leg_rear_left.joint3_angle
-        self.pca.servo[9].angle = msg.leg_rear_right.joint1_angle
-        self.pca.servo[10].angle = msg.leg_rear_right.joint2_angle
-        self.pca.servo[11].angle = msg.leg_rear_right.joint3_angle
+        self.set_servo_angle(0, -msg.leg_front_right.joint1_angle)
+        self.set_servo_angle(1, msg.leg_front_right.joint2_angle)
+        self.set_servo_angle(2, -msg.leg_front_right.joint3_angle)
+        self.set_servo_angle(3, msg.leg_front_left.joint1_angle)
+        self.set_servo_angle(4, -msg.leg_front_left.joint2_angle)
+        self.set_servo_angle(5, msg.leg_front_left.joint3_angle)
+        self.set_servo_angle(6, -msg.leg_rear_left.joint1_angle)
+        self.set_servo_angle(7, -msg.leg_rear_left.joint2_angle)
+        self.set_servo_angle(8, msg.leg_rear_left.joint3_angle)
+        self.set_servo_angle(9, msg.leg_rear_right.joint1_angle)
+        self.set_servo_angle(10, msg.leg_rear_right.joint2_angle)
+        self.set_servo_angle(11, -msg.leg_rear_right.joint3_angle)
+
+    def set_servo_angle(self, servo_i, angle_rad):
+        self.pca.servo[servo_i].angle = SERVO_ZERO[servo_i] + RAD2DEG * angle_rad
+        self.get_logger().info('servo[%d].angle = %.2f' % (servo_i, SERVO_ZERO[servo_i] + RAD2DEG * angle_rad))
 
 
 def main(args=None):
