@@ -7,15 +7,27 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(servo_interfaces REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(inverse_kinematics src/inverse_kinematics.cpp)
+# Set up package executable
+add_executable(inverse_kinematics src/inverse_kinematics.cpp src/inverse_kinematics_lib.cpp)
+ament_target_dependencies(inverse_kinematics rclcpp servo_interfaces)
 target_include_directories(inverse_kinematics PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_compile_features(inverse_kinematics PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+# Set up inverse kinematics test executable
+add_executable(inverse_kinematics_lib_test test/inverse_kinematics_lib_test.cpp src/inverse_kinematics_lib.cpp)
+ament_target_dependencies(inverse_kinematics_lib_test rclcpp servo_interfaces)
+target_include_directories(inverse_kinematics_lib_test PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(inverse_kinematics_lib_test PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 install(TARGETS inverse_kinematics
   DESTINATION lib/${PROJECT_NAME})

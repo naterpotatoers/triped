@@ -23,7 +23,7 @@ class PCA9685Driver(Node):
         # Initialize servo joint angle subscriber
         self.subscription = self.create_subscription(
                 QuadrupedJointAngles,
-                'servo_angles',
+                'joint_angles',
                 self.listener_callback,
                 10)
 

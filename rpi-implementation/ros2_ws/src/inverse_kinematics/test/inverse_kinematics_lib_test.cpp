@@ -3,39 +3,39 @@
 */
 
 
-#include "../include/inverse_kinematics.hpp"
+#include "inverse_kinematics/inverse_kinematics_lib.hpp"
 #include <stdio.h>
 #include <string>
 
 
-float float_tolerance = 0.002f;
+double float_tolerance = 0.002f;
 
 
-bool FloatIsClose(float a, float b);
-int TestCircleIntersection(float c1_x, float c1_y, float r1,
-                           float c2_x, float c2_y, float r2,
+bool FloatIsClose(double a, double b);
+int TestCircleIntersection(double c1_x, double c1_y, double r1,
+                           double c2_x, double c2_y, double r2,
                            int num_intersections_true,
-                           float x_ccw_true, float y_ccw_true,
-                           float x_cw_true, float y_cw_true);
+                           double x_ccw_true, double y_ccw_true,
+                           double x_cw_true, double y_cw_true);
 int TestInverseKinematics(
-    float x, float y, float z,
-    float joint_1_plane_offset, float linkage_2_length, float linkage_3_length,
-    float j1_config, float j2_config,
+    double x, double y, double z,
+    double joint_1_plane_offset, double linkage_2_length, double linkage_3_length,
+    double j1_config, double j2_config,
     int reachable_true,
-    float j1_angle_true, float j2_angle_true, float j3_angle_true);
+    double j1_angle_true, double j2_angle_true, double j3_angle_true);
 
 
 int main(int argc, char* argv[]) {
-  float c1_x, c1_y, r1;
-  float c2_x, c2_y, r2;
+  double c1_x, c1_y, r1;
+  double c2_x, c2_y, r2;
   int num_intersections_true;
-  float x_ccw_true, y_ccw_true;
-  float x_cw_true, y_cw_true;
-  float x, y, z;
-  float joint_1_plane_offset, linkage_2_length, linkage_3_length;
-  float j1_config, j2_config;
+  double x_ccw_true, y_ccw_true;
+  double x_cw_true, y_cw_true;
+  double x, y, z;
+  double joint_1_plane_offset, linkage_2_length, linkage_3_length;
+  double j1_config, j2_config;
   int reachable_true;
-  float j1_angle_true, j2_angle_true, j3_angle_true;
+  double j1_angle_true, j2_angle_true, j3_angle_true;
   int test_result;
   int num_succeeded;
   int num_failed;
@@ -270,7 +270,7 @@ int main(int argc, char* argv[]) {
   // Test 1
   x = 0.5f;
   y = 0.0f;
-  z = -1.0f;
+  z = -1.0f + 0.01;
   joint_1_plane_offset = 0.5f;
   linkage_2_length = 0.5f;
   linkage_3_length = 0.5f;
@@ -278,8 +278,8 @@ int main(int argc, char* argv[]) {
   j2_config = -1.0f;
   reachable_true = 0;
   j1_angle_true = 0.0f;
-  j2_angle_true = 0.0f;
-  j3_angle_true = 0.0f;
+  j2_angle_true = 0.141539473324f;
+  j3_angle_true = -0.283078946649f;
   test_result = TestInverseKinematics(x, y, z,
                                       joint_1_plane_offset,
                                       linkage_2_length,
@@ -312,7 +312,7 @@ int main(int argc, char* argv[]) {
   // Test 2
   x = 0.5f;
   y = 0.0f;
-  z = -1.0f;
+  z = -1.0f + 0.01;
   joint_1_plane_offset = 0.5f;
   linkage_2_length = 0.5f;
   linkage_3_length = 0.5f;
@@ -320,8 +320,8 @@ int main(int argc, char* argv[]) {
   j2_config = 1.0f;
   reachable_true = 0;
   j1_angle_true = 0.0f;
-  j2_angle_true = 0.0f;
-  j3_angle_true = 0.0f;
+  j2_angle_true = -0.141539473324f;
+  j3_angle_true = 0.283078946649f;
   test_result = TestInverseKinematics(x, y, z,
                                       joint_1_plane_offset,
                                       linkage_2_length,
@@ -603,6 +603,90 @@ int main(int argc, char* argv[]) {
     }
   }
 
+  // Test 9
+  x = 1.0f;
+  y = 0.0f;
+  z = -1.0f;
+  joint_1_plane_offset = 0.0f;
+  linkage_2_length = 0.75f;
+  linkage_3_length = 0.75f;
+  j1_config = -1.0f;
+  j2_config = -1.0f;
+  reachable_true = 0;
+  j1_angle_true = 0.785398163397f;
+  j2_angle_true = 0.339836909454f;
+  j3_angle_true = -0.679673818908f;
+  test_result = TestInverseKinematics(x, y, z,
+                                      joint_1_plane_offset,
+                                      linkage_2_length,
+                                      linkage_3_length,
+                                      j1_config, j2_config,
+                                      reachable_true,
+                                      j1_angle_true,
+                                      j2_angle_true,
+                                      j3_angle_true);
+  if (test_result == 0) {
+    num_succeeded += 1;
+    printf("Test 9: succeeded\n");
+  } else {
+    num_failed += 1;
+    printf("Test 9: FAILED\n");
+    if (test_result & (1 << 0)) {
+      printf("  incorrect reachability report\n");
+    }
+    if (test_result & (1 << 1)) {
+      printf("  incorrect J1 angle\n");
+    }
+    if (test_result & (1 << 2)) {
+      printf("  incorrect J2 angle\n");
+    }
+    if (test_result & (1 << 3)) {
+      printf("  incorrect J3 angle\n");
+    }
+  }
+
+  // Test 10
+  x = 1.0f;
+  y = 0.0f;
+  z = -1.0f;
+  joint_1_plane_offset = 0.0f;
+  linkage_2_length = 0.75f;
+  linkage_3_length = 0.75f;
+  j1_config = 1.0f;
+  j2_config = -1.0f;
+  reachable_true = 0;
+  j1_angle_true = -0.785398163397f;
+  j2_angle_true = 0.339836909454f;
+  j3_angle_true = -0.679673818908f;
+  test_result = TestInverseKinematics(x, y, z,
+                                      joint_1_plane_offset,
+                                      linkage_2_length,
+                                      linkage_3_length,
+                                      j1_config, j2_config,
+                                      reachable_true,
+                                      j1_angle_true,
+                                      j2_angle_true,
+                                      j3_angle_true);
+  if (test_result == 0) {
+    num_succeeded += 1;
+    printf("Test 10: succeeded\n");
+  } else {
+    num_failed += 1;
+    printf("Test 10: FAILED\n");
+    if (test_result & (1 << 0)) {
+      printf("  incorrect reachability report\n");
+    }
+    if (test_result & (1 << 1)) {
+      printf("  incorrect J1 angle\n");
+    }
+    if (test_result & (1 << 2)) {
+      printf("  incorrect J2 angle\n");
+    }
+    if (test_result & (1 << 3)) {
+      printf("  incorrect J3 angle\n");
+    }
+  }
+
   printf("Finished testing InverseKinematics.\n");
   printf("  SUCCEEDED: %d\n", num_succeeded);
   printf("  FAILED:    %d\n", num_failed);
@@ -612,17 +696,17 @@ int main(int argc, char* argv[]) {
 }
 
 
-bool FloatIsClose(float a, float b) {
+bool FloatIsClose(double a, double b) {
   return ((a > b) ? (a - b) : (b - a)) <= float_tolerance;
 }
 
 
-int TestCircleIntersection(float c1_x, float c1_y, float r1,
-                           float c2_x, float c2_y, float r2,
+int TestCircleIntersection(double c1_x, double c1_y, double r1,
+                           double c2_x, double c2_y, double r2,
                            int num_intersections_true,
-                           float x_ccw_true, float y_ccw_true,
-                           float x_cw_true, float y_cw_true) {
-  float x, y;
+                           double x_ccw_true, double y_ccw_true,
+                           double x_cw_true, double y_cw_true) {
+  double x, y;
   int num_intersections;
   int result = 0;
 
@@ -655,12 +739,12 @@ int TestCircleIntersection(float c1_x, float c1_y, float r1,
 
 
 int TestInverseKinematics(
-    float x, float y, float z,
-    float joint_1_plane_offset, float linkage_2_length, float linkage_3_length,
-    float j1_config, float j2_config,
+    double x, double y, double z,
+    double joint_1_plane_offset, double linkage_2_length, double linkage_3_length,
+    double j1_config, double j2_config,
     int reachable_true,
-    float j1_angle_true, float j2_angle_true, float j3_angle_true) {
-  float j1_angle, j2_angle, j3_angle;
+    double j1_angle_true, double j2_angle_true, double j3_angle_true) {
+  double j1_angle, j2_angle, j3_angle;
   int reachable;
   int result = 0;
 
