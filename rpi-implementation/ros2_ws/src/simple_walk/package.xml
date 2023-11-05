@@ -7,6 +7,7 @@
   <maintainer email="wwilliamcook@gmail.com">pi</maintainer>
   <license>Apache-2.0</license>
 
+  <depend>mission_control_interfaces</depend>
   <depend>servo_interfaces</depend>
 
   <test_depend>ament_copyright</test_depend>

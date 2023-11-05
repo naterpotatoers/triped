@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 
+from mission_control_interfaces.msg import MissionControlToRobot
 from servo_interfaces.msg import QuadrupedLegPositions
 
 import math
@@ -35,25 +36,40 @@ class QuadSimpleWalk(Node):
     def __init__(self):
         super().__init__('quadruped_simple_walk')
 
+        self.subscription_ = self.create_subscription(
+            MissionControlToRobot,
+            'mission_control_to_robot',
+            self.mission_control_callback,
+            10)
         self.publisher_ = self.create_publisher(
             QuadrupedLegPositions,
             'leg_positions',
             10)
         update_period = 1 / 100  # seconds
         self.timer = self.create_timer(update_period, self.timer_callback)
+        self.last_timer_time = time.perf_counter()
+
+        self.direction = 0.0
+        self.max_speed = 0.2
+        self.speed = 0.0
+
+        self.t = 0.0
 
         self.get_logger().info('simple walk running')
+
+    def mission_control_callback(self, msg):
+        self.direction = math.atan2(msg.velocity.y, msg.velocity.x) - math.pi * 0.5
+        self.speed = max(0.0, min(1.0, math.sqrt(msg.velocity.x**2 + msg.velocity.y**2)))
     
     def timer_callback(self):
         now = time.perf_counter()
 
-        direction = -90
         dir_x, dir_y = (
-            math.cos(direction + math.pi * 0.5),
-            math.sin(direction + math.pi * 0.5),
+            math.cos(self.direction + math.pi * 0.5),
+            math.sin(self.direction + math.pi * 0.5),
         )
 
-        t = now * 0.2
+        t = self.t
         z = -10.0  # inches
 
         stride_size = 4.0
@@ -103,8 +119,6 @@ class QuadSimpleWalk(Node):
         shift_amount = get_shift_amount(leg_t, ratio_raised, shift_amplitude)
         shift_x += shift_amount * 2
         shift_y += shift_amount * -3
-
-#        print('%.2f\t%.2f' % (shift_x, shift_y))
         
         msg.leg_front_right.x += shift_x
         msg.leg_front_right.y += shift_y
@@ -116,6 +130,16 @@ class QuadSimpleWalk(Node):
         msg.leg_rear_right.y += shift_y
 
         self.publisher_.publish(msg)
+
+        # Advance "time" parameter according to desired speed
+        self.t += (now - self.last_timer_time) * self.speed * self.max_speed
+
+        # Decay speed over time when not being updated by mission control
+        # to mitigate connection-loss issues
+        halt_time = 0.5  # seconds it takes for the robot to halt when not receiving commands
+        self.speed = max(0.0, self.speed - self.max_speed * (now - self.last_timer_time) / halt_time)
+
+        self.last_timer_time = now
 
 
 def main(args=None):
