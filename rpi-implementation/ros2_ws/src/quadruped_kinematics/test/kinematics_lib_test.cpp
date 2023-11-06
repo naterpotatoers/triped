@@ -1,9 +1,9 @@
 /**
- * quadruped_kinematics_test.cpp
+ * kinematics_lib_test.cpp
 */
 
 
-#include "quadruped_kinematics/quadruped_kinematics_lib.hpp"
+#include "quadruped_kinematics/kinematics_lib.hpp"
 #include <stdio.h>
 #include <string>
 
