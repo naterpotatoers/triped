@@ -1,3 +1,5 @@
-mission_control_interfaces/Vector2 velocity
-mission_control_interfaces/Vector2 angle
+float64 speed_forward
+float64 speed_right
+float64 speed_angular
 float64 tilt
+float64 height

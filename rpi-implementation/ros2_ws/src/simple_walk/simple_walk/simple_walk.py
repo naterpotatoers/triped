@@ -31,6 +31,12 @@ def get_shift_amount(t, ratio_raised, shift_amount):
         return shift_amount
 
 
+def wrap_direction_error(target_radians, current_radians):
+    pi = math.pi
+    pi2 = 2.0 * math.pi
+    return ((target_radians - current_radians) % pi2 + pi) % pi2 - pi
+
+
 class QuadSimpleWalk(Node):
 
     def __init__(self):
@@ -49,6 +55,7 @@ class QuadSimpleWalk(Node):
         self.timer = self.create_timer(update_period, self.timer_callback)
         self.last_timer_time = time.perf_counter()
 
+        self.target_direction = 0.0
         self.direction = 0.0
         self.max_speed = 0.2
         self.speed = 0.0
@@ -58,11 +65,23 @@ class QuadSimpleWalk(Node):
         self.get_logger().info('simple walk running')
 
     def mission_control_callback(self, msg):
-        self.direction = math.atan2(msg.velocity.y, msg.velocity.x) - math.pi * 0.5
-        self.speed = max(0.0, min(1.0, math.sqrt(msg.velocity.x**2 + msg.velocity.y**2)))
+        self.speed = math.sqrt(msg.speed_forward**2 + msg.speed_right**2)
+        if (self.speed > 0.01):
+            self.target_direction = math.atan2(
+                -msg.speed_right,
+                msg.speed_forward)
+        self.speed = max(0.0, min(1.0, self.speed))
     
     def timer_callback(self):
         now = time.perf_counter()
+
+        # Find out how much to change direction
+        direction_error = self.target_direction - self.direction
+        # Wrap direction error to take the shortest path
+        direction_error = (direction_error % () + 180) % 360 - 180
+        # Slowly change input direction
+        dir_speed = (now - self.last_timer_time) * math.pi * 2.0 * 0.5
+        self.direction += max(-dir_speed, min(dir_speed, direction_error))
 
         dir_x, dir_y = (
             math.cos(self.direction + math.pi * 0.5),
