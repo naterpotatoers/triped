@@ -1,9 +1,9 @@
 /**
- * inverse_kinematics_lib.cpp
+ * quadruped_kinematics_lib.cpp
 */
 
 
-#include "inverse_kinematics/inverse_kinematics_lib.hpp"
+#include "quadruped_kinematics/quadruped_kinematics_lib.hpp"
 #include <cmath>
 
 #include <stdio.h>
@@ -41,7 +41,7 @@ int CircleIntersection(double c1_x, double c1_y, double r1,
   double c_x_distance = c1_x - c2_x;
   double c_y_distance = c1_y - c2_y;
   double inv_sq_center_distance = 1.0f / (c_x_distance * c_x_distance +
-                                         c_y_distance * c_y_distance);
+                                          c_y_distance * c_y_distance);
   double r1_sq_plus_r2_sq = r1 * r1 + r2 * r2;
   double r1_sq_minus_r2_sq = r1 * r1 - r2 * r2;
   double factor_1 = 0.5f * r1_sq_minus_r2_sq * inv_sq_center_distance;
@@ -67,6 +67,54 @@ int CircleIntersection(double c1_x, double c1_y, double r1,
   }
 //  printf("CircleIntersection: < x, y > = < %f , %f >\n", x, y);
   return 1;
+}
+
+
+/**
+ * ForwardKinematics
+ * 
+ * Target TCP is specified relative to the intersection of the J1 axis and its
+ * normal plane that contains the J2 axis. +x points to the right side of the
+ * robot; +y points in the direction the robot is facing; +z points in the
+ * direction projecting "upward" from the robot's top/dorsal plane.
+ * 
+ * Input values:
+ *   j1_angle: double: angle in degrees of J1
+ *   j2_angle: double: angle in degrees of J2
+ *   j3_angle: double: angle in degrees of J3
+ *   joint_1_plane_offset: double: parallel distance between J1 axis and
+ *                                the plane defined by J2 and J3
+ *   linkage_2_length: double: parallel distance between J2 axis and J3 axis
+ *   linkage_3_length: double: distance between J3 axis and TCP
+ *   j1_config: double: +1: ... -1: ...
+ * 
+ * Output parameters:
+ *   x: double: x component of TCP position
+ *   y: double: y component of TCP position
+ *   z: double: z component of TCP position
+*/
+void ForwardKinematics(
+    double j1_angle, double j2_angle, double j3_angle,
+    double joint_1_plane_offset, double linkage_2_length, double linkage_3_length,
+    double j1_config,
+    double &x, double &y, double &z) {
+  double j2_x, j2_y, j2_z;
+  double j3_plane_x, j3_plane_y;
+  double tcp_plane_x, tcp_plane_y;
+
+  j2_x = -j1_config * joint_1_plane_offset * cos(j1_angle);
+  j2_y = 0.0;
+  j2_z = joint_1_plane_offset * sin(j1_angle);
+
+  j3_plane_x = linkage_2_length * sin(j2_angle);
+  j3_plane_y = linkage_2_length * -cos(j2_angle);
+
+  tcp_plane_x = j3_plane_x + linkage_3_length * sin(j2_angle + j3_angle);
+  tcp_plane_y = j3_plane_y + linkage_3_length * -cos(j2_angle + j3_angle);
+
+  x = j2_x + -j1_config * tcp_plane_y * -sin(j1_angle);
+  y = j2_y + tcp_plane_x;
+  z = j2_z + tcp_plane_y * cos(j1_angle);
 }
 
 
@@ -115,8 +163,8 @@ int InverseKinematics(
                               joint_1_plane_offset * joint_1_plane_offset);
 //  printf("InverseKinematics: j1_temp_leg_length = %f\n", j1_temp_leg_length);
     num_intersections = CircleIntersection(0.0f, 0.0f, joint_1_plane_offset,
-                                          j1_x, j1_y, j1_temp_leg_length,
-                                          j1_config, x_temp, y_temp);
+                                           j1_x, j1_y, j1_temp_leg_length,
+                                           j1_config, x_temp, y_temp);
 //  printf("InverseKinematics: j1 num_intersections = %d\n", num_intersections);
 //  printf("InverseKinematics: < x_temp, y_temp > = < %f , %f >\n", x_temp, y_temp);
     if (num_intersections == 0) {

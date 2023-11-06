@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>inverse_kinematics</name>
-  <version>0.0.0</version>
-  <description>Quadruped inverse kinematics.</description>
+  <name>quadruped_kinematics</name>
+  <version>0.2.0</version>
+  <description>Quadruped kinematics.</description>
   <maintainer email="pi@todo.todo">pi</maintainer>
   <license>Apache-2.0</license>
 

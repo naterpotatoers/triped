@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(inverse_kinematics)
+project(quadruped_kinematics)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -14,22 +14,26 @@ find_package(servo_interfaces REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 # Set up package executable
-add_executable(inverse_kinematics src/inverse_kinematics.cpp src/inverse_kinematics_lib.cpp)
-ament_target_dependencies(inverse_kinematics rclcpp servo_interfaces)
-target_include_directories(inverse_kinematics PUBLIC
+add_executable(quadruped_kinematics
+               src/quadruped_kinematics.cpp
+               src/quadruped_kinematics_lib.cpp)
+ament_target_dependencies(quadruped_kinematics rclcpp servo_interfaces)
+target_include_directories(quadruped_kinematics PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_compile_features(inverse_kinematics PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(quadruped_kinematics PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 # Set up inverse kinematics test executable
-add_executable(inverse_kinematics_lib_test test/inverse_kinematics_lib_test.cpp src/inverse_kinematics_lib.cpp)
-ament_target_dependencies(inverse_kinematics_lib_test rclcpp servo_interfaces)
-target_include_directories(inverse_kinematics_lib_test PUBLIC
+add_executable(quadruped_kinematics_lib_test
+               test/quadruped_kinematics_lib_test.cpp
+               src/quadruped_kinematics_lib.cpp)
+ament_target_dependencies(quadruped_kinematics_lib_test rclcpp servo_interfaces)
+target_include_directories(quadruped_kinematics_lib_test PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_compile_features(inverse_kinematics_lib_test PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(quadruped_kinematics_lib_test PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-install(TARGETS inverse_kinematics
+install(TARGETS quadruped_kinematics
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

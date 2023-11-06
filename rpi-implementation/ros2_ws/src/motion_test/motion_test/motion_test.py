@@ -27,25 +27,24 @@ class QuadMotionTest(Node):
 
         theta = (now * 2 * math.pi * 0.8) % (2 * math.pi)  # radians
         amp = 1.0  # inches
-        z = -10.0  # inches
-        z = -8.5 + 1.5 * math.cos(now * 2 * math.pi / 3)
+        z = -7.5 + 1.5 * math.cos(now * 2 * math.pi / 3)  # inches
 
         msg = QuadrupedLegPositions()
 
-        msg.leg_front_right.x = 3 + amp * math.cos(theta)
-        msg.leg_front_right.y = 3 + amp * math.sin(theta)
+        msg.leg_front_right.x = 7 + amp * math.cos(theta)
+        msg.leg_front_right.y = 8 + amp * math.sin(theta)
         msg.leg_front_right.z = z
 
-        msg.leg_front_left.x = -3 + amp * math.cos(theta)
-        msg.leg_front_left.y = 3 + amp * math.sin(theta)
+        msg.leg_front_left.x = -7 + amp * math.cos(theta)
+        msg.leg_front_left.y = 8 + amp * math.sin(theta)
         msg.leg_front_left.z = z
 
-        msg.leg_rear_left.x = -3 + amp * math.cos(theta)
-        msg.leg_rear_left.y = -3 + amp * math.sin(theta)
+        msg.leg_rear_left.x = -7 + amp * math.cos(theta)
+        msg.leg_rear_left.y = -8 + amp * math.sin(theta)
         msg.leg_rear_left.z = z
 
-        msg.leg_rear_right.x = 3 + amp * math.cos(theta)
-        msg.leg_rear_right.y = -3 + amp * math.sin(theta)
+        msg.leg_rear_right.x = 7 + amp * math.cos(theta)
+        msg.leg_rear_right.y = -8 + amp * math.sin(theta)
         msg.leg_rear_right.z = z
 
         self.publisher_.publish(msg)

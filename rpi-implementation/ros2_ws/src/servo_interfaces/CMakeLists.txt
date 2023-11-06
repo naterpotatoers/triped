@@ -31,6 +31,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 	"msg/LegJointAngles.msg"
 	"msg/QuadrupedJointAngles.msg"
 	"msg/QuadrupedLegPositions.msg"
+  "srv/QuadrupedForwardKinematics.srv"
+  "srv/QuadrupedInverseKinematics.srv"
 	DEPENDENCIES std_msgs geometry_msgs
 )
 

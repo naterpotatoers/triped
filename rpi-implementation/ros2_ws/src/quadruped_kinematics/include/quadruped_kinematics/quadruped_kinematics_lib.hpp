@@ -1,10 +1,10 @@
 /**
- * inverse_kinematics_lib.hpp
+ * quadruped_kinematics_lib.hpp
 */
 
 
-#ifndef TRIPED_INVERSE_KINEMATICS_H_
-#define TRIPED_INVERSE_KINEMATICS_H_
+#ifndef QUADRUPED_KINEMATICS_HPP_
+#define QUADRUPED_KINEMATICS_HPP_
 
 
 /**
@@ -35,7 +35,37 @@ int CircleIntersection(double c1_x, double c1_y, double r1,
 
 
 /**
- * inverseKinematics
+ * ForwardKinematics
+ * 
+ * Target TCP is specified relative to the intersection of the J1 axis and its
+ * normal plane that contains the J2 axis. +x points to the right side of the
+ * robot; +y points in the direction the robot is facing; +z points in the
+ * direction projecting "upward" from the robot's top/dorsal plane.
+ * 
+ * Input values:
+ *   j1_angle: double: angle in degrees of J1
+ *   j2_angle: double: angle in degrees of J2
+ *   j3_angle: double: angle in degrees of J3
+ *   joint_1_plane_offset: double: parallel distance between J1 axis and
+ *                                the plane defined by J2 and J3
+ *   linkage_2_length: double: parallel distance between J2 axis and J3 axis
+ *   linkage_3_length: double: distance between J3 axis and TCP
+ *   j1_config: double: +1: ... -1: ...
+ * 
+ * Output parameters:
+ *   x: double: x component of TCP position
+ *   y: double: y component of TCP position
+ *   z: double: z component of TCP position
+*/
+void ForwardKinematics(
+  double j1_angle, double j2_angle, double j3_angle,
+  double joint_1_plane_offset, double linkage_2_length, double linkage_3_length,
+  double j1_config,
+  double &x, double &y, double &z);
+
+
+/**
+ * InverseKinematics
  * 
  * Target TCP is specified relative to the intersection of the J1 axis and its
  * normal plane that contains the J2 axis. +x points to the right side of the
@@ -61,10 +91,10 @@ int CircleIntersection(double c1_x, double c1_y, double r1,
  * Returns: int: 0 if successful, -1 if target TCP position is unreachable
 */
 int InverseKinematics(
-    double x, double y, double z,
-    double joint_1_plane_offset, double linkage_2_length, double linkage_3_length,
-    double j1_config, double j2_config,
-    double &j1_angle, double &j2_angle, double &j3_angle);
+  double x, double y, double z,
+  double joint_1_plane_offset, double linkage_2_length, double linkage_3_length,
+  double j1_config, double j2_config,
+  double &j1_angle, double &j2_angle, double &j3_angle);
 
 
 #endif
