@@ -94,8 +94,8 @@ class QuadSimpleWalk(Node):
         stride_size = 4.0
         raised_height = 2.0
         ratio_raised = 0.2
-        stance_width_x = 2
-        stance_width_y = 3
+        stance_width_x = 6
+        stance_width_y = 8.5
         shift_amplitude = 0.8
 
         msg = QuadrupedLegPositions()
