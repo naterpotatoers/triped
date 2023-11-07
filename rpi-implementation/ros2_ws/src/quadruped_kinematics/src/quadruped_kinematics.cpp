@@ -65,56 +65,56 @@ QuadrupedKinematics::QuadrupedKinematics()
 
 void QuadrupedKinematics::leg_positions_callback(const QuadrupedLegPositions& leg_positions_msg) const
 {
-  RCLCPP_INFO(this->get_logger(), "Leg positions received:");
-  RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
-              leg_positions_msg.leg_front_right.x,
-              leg_positions_msg.leg_front_right.y,
-              leg_positions_msg.leg_front_right.z);
-  RCLCPP_INFO(this->get_logger(), "\tFront left: < %.2f, %.2f, %.2f >",
-              leg_positions_msg.leg_front_left.x,
-              leg_positions_msg.leg_front_left.y,
-              leg_positions_msg.leg_front_left.z);
-  RCLCPP_INFO(this->get_logger(), "\tRear left: < %.2f, %.2f, %.2f >",
-              leg_positions_msg.leg_rear_left.x,
-              leg_positions_msg.leg_rear_left.y,
-              leg_positions_msg.leg_rear_left.z);
-  RCLCPP_INFO(this->get_logger(), "\tRear right: < %.2f, %.2f, %.2f >",
-              leg_positions_msg.leg_rear_right.x,
-              leg_positions_msg.leg_rear_right.y,
-              leg_positions_msg.leg_rear_right.z);
+  // RCLCPP_INFO(this->get_logger(), "Leg positions received:");
+  // RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
+  //             leg_positions_msg.leg_front_right.x,
+  //             leg_positions_msg.leg_front_right.y,
+  //             leg_positions_msg.leg_front_right.z);
+  // RCLCPP_INFO(this->get_logger(), "\tFront left: < %.2f, %.2f, %.2f >",
+  //             leg_positions_msg.leg_front_left.x,
+  //             leg_positions_msg.leg_front_left.y,
+  //             leg_positions_msg.leg_front_left.z);
+  // RCLCPP_INFO(this->get_logger(), "\tRear left: < %.2f, %.2f, %.2f >",
+  //             leg_positions_msg.leg_rear_left.x,
+  //             leg_positions_msg.leg_rear_left.y,
+  //             leg_positions_msg.leg_rear_left.z);
+  // RCLCPP_INFO(this->get_logger(), "\tRear right: < %.2f, %.2f, %.2f >",
+  //             leg_positions_msg.leg_rear_right.x,
+  //             leg_positions_msg.leg_rear_right.y,
+  //             leg_positions_msg.leg_rear_right.z);
 
   auto joint_angles_msg = apply_inverse_kinematics(leg_positions_msg);
   bool do_publish = true;
   
-  RCLCPP_INFO(this->get_logger(), "Joint angles calculated:");
-  RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
-              joint_angles_msg.leg_front_right.joint1_angle,
-              joint_angles_msg.leg_front_right.joint2_angle,
-              joint_angles_msg.leg_front_right.joint3_angle);
+  // RCLCPP_INFO(this->get_logger(), "Joint angles calculated:");
+  // RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
+  //             joint_angles_msg.leg_front_right.joint1_angle,
+  //             joint_angles_msg.leg_front_right.joint2_angle,
+  //             joint_angles_msg.leg_front_right.joint3_angle);
   if (!joint_angles_msg.leg_front_right.position_reachable) {
     do_publish = false;
     RCLCPP_INFO(this->get_logger(), "\tFront right target position unreachable");
   }
-  RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
-              joint_angles_msg.leg_front_left.joint1_angle,
-              joint_angles_msg.leg_front_left.joint2_angle,
-              joint_angles_msg.leg_front_left.joint3_angle);
+  // RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
+  //             joint_angles_msg.leg_front_left.joint1_angle,
+  //             joint_angles_msg.leg_front_left.joint2_angle,
+  //             joint_angles_msg.leg_front_left.joint3_angle);
   if (!joint_angles_msg.leg_front_left.position_reachable) {
     do_publish = false;
     RCLCPP_INFO(this->get_logger(), "\tFront left target position unreachable");
   }
-  RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
-              joint_angles_msg.leg_rear_left.joint1_angle,
-              joint_angles_msg.leg_rear_left.joint2_angle,
-              joint_angles_msg.leg_rear_left.joint3_angle);
+  // RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
+  //             joint_angles_msg.leg_rear_left.joint1_angle,
+  //             joint_angles_msg.leg_rear_left.joint2_angle,
+  //             joint_angles_msg.leg_rear_left.joint3_angle);
   if (!joint_angles_msg.leg_rear_left.position_reachable) {
     do_publish = false;
     RCLCPP_INFO(this->get_logger(), "\tRear left target position unreachable");
   }
-  RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
-              joint_angles_msg.leg_rear_right.joint1_angle,
-              joint_angles_msg.leg_rear_right.joint2_angle,
-              joint_angles_msg.leg_rear_right.joint3_angle);
+  // RCLCPP_INFO(this->get_logger(), "\tFront right: < %.2f, %.2f, %.2f >",
+  //             joint_angles_msg.leg_rear_right.joint1_angle,
+  //             joint_angles_msg.leg_rear_right.joint2_angle,
+  //             joint_angles_msg.leg_rear_right.joint3_angle);
   if (!joint_angles_msg.leg_rear_right.position_reachable) {
     do_publish = false;
     RCLCPP_INFO(this->get_logger(), "\tRear right target position unreachable");
