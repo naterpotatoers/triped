@@ -42,48 +42,83 @@ class PCA9685Driver(Node):
 
     def listener_callback(self, msg):
         now = time.perf_counter()
-        if now - self._last_angle_log_time >= 1:
-            self._last_angle_log_time = now
-            # Log received angles
-            self.get_logger().info('Servo angles received:')
-            self.get_logger().info('\tFront right: < %.2f, %.2f, %.2f >' % (
-                msg.leg_front_right.joint1_angle,
-                msg.leg_front_right.joint2_angle,
-                msg.leg_front_right.joint3_angle,
-            ))
-            self.get_logger().info('\tFront left: < %.2f, %.2f, %.2f >' % (
-                msg.leg_front_left.joint1_angle,
-                msg.leg_front_left.joint2_angle,
-                msg.leg_front_left.joint3_angle,
-            ))
-            self.get_logger().info('\tRear left: < %.2f, %.2f, %.2f >' % (
-                msg.leg_rear_left.joint1_angle,
-                msg.leg_rear_left.joint2_angle,
-                msg.leg_rear_left.joint3_angle,
-            ))
-            self.get_logger().info('\tRear right: < %.2f, %.2f, %.2f >' % (
-                msg.leg_rear_right.joint1_angle,
-                msg.leg_rear_right.joint2_angle,
-                msg.leg_rear_right.joint3_angle,
-            ))
+        # if now - self._last_angle_log_time >= 1:
+        #     self._last_angle_log_time = now
+        #     # Log received angles
+        #     self.get_logger().info('Servo angles received:')
+        #     self.get_logger().info('\tFront right: < %.2f, %.2f, %.2f >' % (
+        #         msg.leg_front_right.joint1_angle,
+        #         msg.leg_front_right.joint2_angle,
+        #         msg.leg_front_right.joint3_angle,
+        #     ))
+        #     self.get_logger().info('\tFront left: < %.2f, %.2f, %.2f >' % (
+        #         msg.leg_front_left.joint1_angle,
+        #         msg.leg_front_left.joint2_angle,
+        #         msg.leg_front_left.joint3_angle,
+        #     ))
+        #     self.get_logger().info('\tRear left: < %.2f, %.2f, %.2f >' % (
+        #         msg.leg_rear_left.joint1_angle,
+        #         msg.leg_rear_left.joint2_angle,
+        #         msg.leg_rear_left.joint3_angle,
+        #     ))
+        #     self.get_logger().info('\tRear right: < %.2f, %.2f, %.2f >' % (
+        #         msg.leg_rear_right.joint1_angle,
+        #         msg.leg_rear_right.joint2_angle,
+        #         msg.leg_rear_right.joint3_angle,
+        #     ))
 
-        # Send angles to PCA9685
-        self.set_servo_angle(0, -msg.leg_front_right.joint1_angle)
-        self.set_servo_angle(1, msg.leg_front_right.joint2_angle)
-        self.set_servo_angle(2, -msg.leg_front_right.joint3_angle)
-        self.set_servo_angle(3, msg.leg_front_left.joint1_angle)
-        self.set_servo_angle(4, -msg.leg_front_left.joint2_angle)
-        self.set_servo_angle(5, msg.leg_front_left.joint3_angle)
-        self.set_servo_angle(6, -msg.leg_rear_left.joint1_angle)
-        self.set_servo_angle(7, -msg.leg_rear_left.joint2_angle)
-        self.set_servo_angle(8, msg.leg_rear_left.joint3_angle)
-        self.set_servo_angle(9, msg.leg_rear_right.joint1_angle)
-        self.set_servo_angle(10, msg.leg_rear_right.joint2_angle)
-        self.set_servo_angle(11, -msg.leg_rear_right.joint3_angle)
+        positions_reachable = True
+        positions_reachable = positions_reachable and msg.leg_front_right.position_reachable
+        positions_reachable = positions_reachable and msg.leg_front_left.position_reachable
+        positions_reachable = positions_reachable and msg.leg_rear_left.position_reachable
+        positions_reachable = positions_reachable and msg.leg_rear_right.position_reachable
+
+        if not positions_reachable:
+            self.get_logger().info('UNREACHABLE POSITION')
+
+        angles_valid = True
+        if msg.leg_front_right.position_reachable:
+            angles_valid = angles_valid and self.get_servo_angle_valid(0, -msg.leg_front_right.joint1_angle)
+            angles_valid = angles_valid and self.get_servo_angle_valid(1, msg.leg_front_right.joint2_angle)
+            angles_valid = angles_valid and self.get_servo_angle_valid(2, -msg.leg_front_right.joint3_angle)
+        if msg.leg_front_left.position_reachable:
+            angles_valid = angles_valid and self.get_servo_angle_valid(3, msg.leg_front_left.joint1_angle)
+            angles_valid = angles_valid and self.get_servo_angle_valid(4, -msg.leg_front_left.joint2_angle)
+            angles_valid = angles_valid and self.get_servo_angle_valid(5, msg.leg_front_left.joint3_angle)
+        if msg.leg_rear_left.position_reachable:
+            angles_valid = angles_valid and self.get_servo_angle_valid(6, -msg.leg_rear_left.joint1_angle)
+            angles_valid = angles_valid and self.get_servo_angle_valid(7, -msg.leg_rear_left.joint2_angle)
+            angles_valid = angles_valid and self.get_servo_angle_valid(8, msg.leg_rear_left.joint3_angle)
+        if msg.leg_rear_right.position_reachable:
+            angles_valid = angles_valid and self.get_servo_angle_valid(9, msg.leg_rear_right.joint1_angle)
+            angles_valid = angles_valid and self.get_servo_angle_valid(10, msg.leg_rear_right.joint2_angle)
+            angles_valid = angles_valid and self.get_servo_angle_valid(11, -msg.leg_rear_right.joint3_angle)
+
+        if not angles_valid:
+            self.get_logger().info('INVALID ANGLE')
+
+        if positions_reachable and angles_valid:
+            # Send angles to PCA9685
+            self.set_servo_angle(0, -msg.leg_front_right.joint1_angle)
+            self.set_servo_angle(1, msg.leg_front_right.joint2_angle)
+            self.set_servo_angle(2, -msg.leg_front_right.joint3_angle)
+            self.set_servo_angle(3, msg.leg_front_left.joint1_angle)
+            self.set_servo_angle(4, -msg.leg_front_left.joint2_angle)
+            self.set_servo_angle(5, msg.leg_front_left.joint3_angle)
+            self.set_servo_angle(6, -msg.leg_rear_left.joint1_angle)
+            self.set_servo_angle(7, -msg.leg_rear_left.joint2_angle)
+            self.set_servo_angle(8, msg.leg_rear_left.joint3_angle)
+            self.set_servo_angle(9, msg.leg_rear_right.joint1_angle)
+            self.set_servo_angle(10, msg.leg_rear_right.joint2_angle)
+            self.set_servo_angle(11, -msg.leg_rear_right.joint3_angle)
+
+    def get_servo_angle_valid(self, servo_i, angle_rad):
+        angle_deg = SERVO_ZERO[servo_i] + RAD2DEG * angle_rad
+        return 0 <= angle_deg and angle_deg <= 270
 
     def set_servo_angle(self, servo_i, angle_rad):
-        self.pca.servo[servo_i].angle = SERVO_ZERO[servo_i] + RAD2DEG * angle_rad
-        self.get_logger().info('servo[%d].angle = %.2f' % (servo_i, SERVO_ZERO[servo_i] + RAD2DEG * angle_rad))
+        self.pca.servo[servo_i].angle = max(0, min(270, SERVO_ZERO[servo_i] + RAD2DEG * angle_rad))
+        # self.get_logger().info('servo[%d].angle = %.2f' % (servo_i, SERVO_ZERO[servo_i] + RAD2DEG * angle_rad))
 
 
 def main(args=None):
