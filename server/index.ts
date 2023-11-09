@@ -26,7 +26,7 @@ app.get("/quadruped", (req, res) => {
 app.post("/quadruped", (req, res) => {
   quadrupedCommands = req.body;
   console.log("POST /quadruped");
-  res.send(quadrupedStatus);
+  res.json(quadrupedStatus);
 });
 
 app.get("/quadruped/status", (req, res) => {

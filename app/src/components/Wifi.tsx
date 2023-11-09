@@ -9,7 +9,7 @@ export default function Wifi({
 }) {
   const [isConnected, setIsConnected] = useState(false);
   const [serverAddress, setServerAddress] = useState(
-    "http://localhost:5000/endpoint"
+    "http://localhost:5000/quadruped"
   );
 
   function connect() {
@@ -28,10 +28,13 @@ export default function Wifi({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.parse(commands.current),
+          body: commands.current,
         });
-        setStatus(responseStatus);
+        const response = await responseStatus.json();
+        console.log(response);
+        setStatus(response);
       } catch (error) {
+        console.log(error);
         disconnect();
         setStatus("Unable to post commands, verify backend is running");
       }

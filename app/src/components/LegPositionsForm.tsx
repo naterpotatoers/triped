@@ -32,10 +32,6 @@ export default function LegPositionsForm({
   }
 
   function updateController() {
-    const leftStickX = gamepad?.axes[0];
-    const leftStickY = gamepad?.axes[1];
-    const rightStickX = gamepad?.axes[2];
-    const rightStickY = gamepad?.axes[3];
     if (gamepadRef.current) {
       const newCommands = {
         ...commandsRef.current,
@@ -61,7 +57,10 @@ export default function LegPositionsForm({
         onChange={(e) =>
           updateCommands({
             ...legPositionsCommands,
-            frontLeft: { ...legPositionsCommands.frontLeft, x: e.target.value },
+            frontLeft: {
+              ...legPositionsCommands.frontLeft,
+              x: parseFloat(e.target.value),
+            },
           })
         }
         label="Front Left X"
@@ -74,7 +73,10 @@ export default function LegPositionsForm({
         onChange={(e) =>
           updateCommands({
             ...legPositionsCommands,
-            frontLeft: { ...legPositionsCommands.frontLeft, y: e.target.value },
+            frontLeft: {
+              ...legPositionsCommands.frontLeft,
+              y: parseFloat(e.target.value),
+            },
           })
         }
         label="Front Left Y"
@@ -87,7 +89,10 @@ export default function LegPositionsForm({
         onChange={(e) =>
           updateCommands({
             ...legPositionsCommands,
-            frontLeft: { ...legPositionsCommands.frontLeft, z: e.target.value },
+            frontLeft: {
+              ...legPositionsCommands.frontLeft,
+              z: parseFloat(e.target.value),
+            },
           })
         }
         label="Front Left Z"
@@ -102,7 +107,7 @@ export default function LegPositionsForm({
             ...legPositionsCommands,
             frontRight: {
               ...legPositionsCommands.frontRight,
-              x: e.target.value,
+              x: parseFloat(e.target.value),
             },
           })
         }
@@ -118,7 +123,7 @@ export default function LegPositionsForm({
             ...legPositionsCommands,
             frontRight: {
               ...legPositionsCommands.frontRight,
-              y: e.target.value,
+              y: parseFloat(e.target.value),
             },
           })
         }
@@ -134,7 +139,7 @@ export default function LegPositionsForm({
             ...legPositionsCommands,
             frontRight: {
               ...legPositionsCommands.frontRight,
-              z: e.target.value,
+              z: parseFloat(e.target.value),
             },
           })
         }
@@ -148,7 +153,10 @@ export default function LegPositionsForm({
         onChange={(e) =>
           updateCommands({
             ...legPositionsCommands,
-            backLeft: { ...legPositionsCommands.backLeft, x: e.target.value },
+            backLeft: {
+              ...legPositionsCommands.backLeft,
+              x: parseFloat(e.target.value),
+            },
           })
         }
         label="Back Left X"
@@ -161,7 +169,10 @@ export default function LegPositionsForm({
         onChange={(e) =>
           updateCommands({
             ...legPositionsCommands,
-            backLeft: { ...legPositionsCommands.backLeft, y: e.target.value },
+            backLeft: {
+              ...legPositionsCommands.backLeft,
+              y: parseFloat(e.target.value),
+            },
           })
         }
         label="Back Left Y"
@@ -174,7 +185,10 @@ export default function LegPositionsForm({
         onChange={(e) =>
           updateCommands({
             ...legPositionsCommands,
-            backLeft: { ...legPositionsCommands.backLeft, z: e.target.value },
+            backLeft: {
+              ...legPositionsCommands.backLeft,
+              z: parseFloat(e.target.value),
+            },
           })
         }
         label="Back Left Z"
@@ -189,7 +203,7 @@ export default function LegPositionsForm({
             ...legPositionsCommands,
             backRight: {
               ...legPositionsCommands.backRight,
-              x: e.target.value,
+              x: parseFloat(e.target.value),
             },
           })
         }
@@ -205,7 +219,7 @@ export default function LegPositionsForm({
             ...legPositionsCommands,
             backRight: {
               ...legPositionsCommands.backRight,
-              y: e.target.value,
+              y: parseFloat(e.target.value),
             },
           })
         }
@@ -221,7 +235,7 @@ export default function LegPositionsForm({
             ...legPositionsCommands,
             backRight: {
               ...legPositionsCommands.backRight,
-              z: e.target.value,
+              z: parseFloat(e.target.value),
             },
           })
         }
@@ -229,6 +243,14 @@ export default function LegPositionsForm({
         min={-100}
         max={100}
       />
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          commands.current = legPositionsCommandFormatter(legPositionsCommands);
+        }}
+      >
+        Send
+      </button>
     </form>
   );
 }
