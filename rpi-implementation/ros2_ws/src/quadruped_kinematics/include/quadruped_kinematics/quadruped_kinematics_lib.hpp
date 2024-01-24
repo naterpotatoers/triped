@@ -17,7 +17,7 @@ const double LINKAGE_2_LENGTH = 5.0;
 const double LINKAGE_3_LENGTH = 7.42;
 const double JOINT_1_X_OFFSET = 3.732;
 const double JOINT_1_Y_OFFSET = 5.466;
-const double JOINT_1_Z_OFFSET = 0.929 - 0.15;
+const double JOINT_1_Z_OFFSET = 0.929 - 0.15;  // <distance from bottom of chassis up to J1s> - <radius of foot>
 
 
 servo_interfaces::msg::QuadrupedLegPositions apply_forward_kinematics(

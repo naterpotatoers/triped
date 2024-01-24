@@ -20,7 +20,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'simple_walk = simple_walk.simple_walk:main'
+            'simple_walk = simple_walk.simple_walk:main',
+            'simple_narrow_walk = simple_walk.simple_narrow_walk:main',
+            'simple_smooth_walk = simple_walk.simple_smooth_walk:main',
         ],
     },
 )

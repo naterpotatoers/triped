@@ -1,10 +1,10 @@
 from setuptools import find_packages, setup
 
-package_name = 'servo_control'
+package_name = 'mission_control_motion_test_with_stepping'
 
 setup(
     name=package_name,
-    version='0.2.0',
+    version='0.0.0',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -14,14 +14,13 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='pi',
-    maintainer_email='pi@todo.todo',
+    maintainer_email='wwilliamcook@gmail.com',
     description='TODO: Package description',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'pca9685_driver = servo_control.pca9685_driver:main',
-            'dual_pca9685_driver = servo_control.dual_pca9685_driver:main',
+            'motion_test = mission_control_motion_test_with_stepping.motion_test:main'
         ],
     },
 )

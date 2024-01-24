@@ -30,7 +30,7 @@ class QuadMCMotionTest(Node):
         
         self.x = 0.0
         self.y = 0.0
-        self.z = 8.5
+        self.z = 5.5
         self.turn_theta = 0.0
         self.tilt_theta = 0.0
         
@@ -42,14 +42,17 @@ class QuadMCMotionTest(Node):
 
         self.radius = 2.0  # inches
         self.max_turn_degrees = 15
-        self.max_tilt_degrees = 30
+        self.max_tilt_degrees = 40
 
         self.get_logger().info('mission control motion test running')
     
     def mission_control_callback(self, mc_msg):
         self.target_x = mc_msg.speed_right
         self.target_y = mc_msg.speed_forward
-        self.target_z = 8.5 + 2.5 * mc_msg.height  # inches
+        if mc_msg.height >= 0.0:
+            self.target_z = 7.0 + 3.5 * mc_msg.height  # inches
+        else:
+            self.target_z = 7.0 + 6.125 * mc_msg.height  # inches
         self.target_turn_theta = mc_msg.speed_angular * self.max_turn_degrees * math.pi / 180
         self.target_tilt_theta = mc_msg.tilt * self.max_tilt_degrees * math.pi / 180
         # self.get_logger().info('target < x, y, z, turn, tilt > = < {:5.2f}, {:5.2f}, {:5.2f}, {:5.2f}, {:5.2f} >'.format(
@@ -70,11 +73,13 @@ class QuadMCMotionTest(Node):
         #     self.x, self.y, self.z, self.turn_theta, self.tilt_theta))
 
         amp = self.radius
+        stance_width = 3.75#4.875
+        stance_length = 9.0
 
         msg = QuadrupedLegPositions()
 
-        x = 7 + amp * -self.x
-        y = 7 + amp * -self.y
+        x = stance_width + amp * -self.x
+        y = stance_length + amp * -self.y
         msg.leg_front_right.x = x * math.cos(self.turn_theta) - y * math.sin(self.turn_theta)
         msg.leg_front_right.y = x * math.sin(self.turn_theta) + y * math.cos(self.turn_theta)
         msg.leg_front_right.z = -self.z
@@ -83,8 +88,8 @@ class QuadMCMotionTest(Node):
         msg.leg_front_right.y = tilt_x * math.cos(-self.tilt_theta) - tilt_y * math.sin(-self.tilt_theta)
         msg.leg_front_right.z = tilt_x * math.sin(-self.tilt_theta) + tilt_y * math.cos(-self.tilt_theta)
 
-        x = -7 + amp * -self.x
-        y = 7 + amp * -self.y
+        x = -stance_width + amp * -self.x
+        y = stance_length + amp * -self.y
         msg.leg_front_left.x = x * math.cos(self.turn_theta) - y * math.sin(self.turn_theta)
         msg.leg_front_left.y = x * math.sin(self.turn_theta) + y * math.cos(self.turn_theta)
         msg.leg_front_left.z = -self.z
@@ -93,8 +98,8 @@ class QuadMCMotionTest(Node):
         msg.leg_front_left.y = tilt_x * math.cos(-self.tilt_theta) - tilt_y * math.sin(-self.tilt_theta)
         msg.leg_front_left.z = tilt_x * math.sin(-self.tilt_theta) + tilt_y * math.cos(-self.tilt_theta)
 
-        x = -7 + amp * -self.x
-        y = -7 + amp * -self.y
+        x = -stance_width + amp * -self.x
+        y = -stance_length + amp * -self.y
         msg.leg_rear_left.x = x * math.cos(self.turn_theta) - y * math.sin(self.turn_theta)
         msg.leg_rear_left.y = x * math.sin(self.turn_theta) + y * math.cos(self.turn_theta)
         msg.leg_rear_left.z = -self.z
@@ -103,8 +108,8 @@ class QuadMCMotionTest(Node):
         msg.leg_rear_left.y = tilt_x * math.cos(-self.tilt_theta) - tilt_y * math.sin(-self.tilt_theta)
         msg.leg_rear_left.z = tilt_x * math.sin(-self.tilt_theta) + tilt_y * math.cos(-self.tilt_theta)
 
-        x = 7 + amp * -self.x
-        y = -7 + amp * -self.y
+        x = stance_width + amp * -self.x
+        y = -stance_length + amp * -self.y
         msg.leg_rear_right.x = x * math.cos(self.turn_theta) - y * math.sin(self.turn_theta)
         msg.leg_rear_right.y = x * math.sin(self.turn_theta) + y * math.cos(self.turn_theta)
         msg.leg_rear_right.z = -self.z

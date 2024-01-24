@@ -82,6 +82,7 @@ class QuadSimpleWalk(Node):
         # Slowly change input direction
         dir_speed = (now - self.last_timer_time) * math.pi * 2.0 * 0.5
         self.direction += max(-dir_speed, min(dir_speed, direction_error))
+        self.direction = 0.0
 
         dir_x, dir_y = (
             math.cos(self.direction + math.pi * 0.5),
@@ -151,6 +152,7 @@ class QuadSimpleWalk(Node):
         self.publisher_.publish(msg)
 
         # Advance "time" parameter according to desired speed
+        self.speed = 1.0
         self.t += (now - self.last_timer_time) * self.speed * self.max_speed
 
         # Decay speed over time when not being updated by mission control

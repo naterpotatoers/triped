@@ -94,8 +94,8 @@ QuadrupedJointAngles apply_inverse_kinematics(
   joint_angles.leg_front_right.joint3_angle = j3_angle;
   joint_angles.leg_front_right.position_reachable = (ik_status == 0);
   joint_angles.leg_front_right.position_reachable &= (-135.0 <= j1_angle && j1_angle <= 135.0);
-  joint_angles.leg_front_right.position_reachable &= (-135.0 <= j2_angle && j2_angle <= 135.0);
-  joint_angles.leg_front_right.position_reachable &= (-135.0 <= j3_angle && j3_angle <= 135.0);
+  joint_angles.leg_front_right.position_reachable &= (-180.0 <= j2_angle && j2_angle <= 180.0);
+  joint_angles.leg_front_right.position_reachable &= (-180.0 <= j3_angle && j3_angle <= 180.0);
 
   // Front Left
   ik_status = InverseKinematics(
@@ -110,8 +110,8 @@ QuadrupedJointAngles apply_inverse_kinematics(
   joint_angles.leg_front_left.joint3_angle = j3_angle;
   joint_angles.leg_front_left.position_reachable = (ik_status == 0);
   joint_angles.leg_front_left.position_reachable &= (-135.0 <= j1_angle && j1_angle <= 135.0);
-  joint_angles.leg_front_left.position_reachable &= (-135.0 <= j2_angle && j2_angle <= 135.0);
-  joint_angles.leg_front_left.position_reachable &= (-135.0 <= j3_angle && j3_angle <= 135.0);
+  joint_angles.leg_front_left.position_reachable &= (-180.0 <= j2_angle && j2_angle <= 180.0);
+  joint_angles.leg_front_left.position_reachable &= (-180.0 <= j3_angle && j3_angle <= 180.0);
 
   // Rear Left
   ik_status = InverseKinematics(
@@ -126,8 +126,8 @@ QuadrupedJointAngles apply_inverse_kinematics(
   joint_angles.leg_rear_left.joint3_angle = j3_angle;
   joint_angles.leg_rear_left.position_reachable = (ik_status == 0);
   joint_angles.leg_rear_left.position_reachable &= (-135.0 <= j1_angle && j1_angle <= 135.0);
-  joint_angles.leg_rear_left.position_reachable &= (-135.0 <= j2_angle && j2_angle <= 135.0);
-  joint_angles.leg_rear_left.position_reachable &= (-135.0 <= j3_angle && j3_angle <= 135.0);
+  joint_angles.leg_rear_left.position_reachable &= (-180.0 <= j2_angle && j2_angle <= 180.0);
+  joint_angles.leg_rear_left.position_reachable &= (-180.0 <= j3_angle && j3_angle <= 180.0);
 
   // Rear Right
   ik_status = InverseKinematics(
@@ -142,8 +142,8 @@ QuadrupedJointAngles apply_inverse_kinematics(
   joint_angles.leg_rear_right.joint3_angle = j3_angle;
   joint_angles.leg_rear_right.position_reachable = (ik_status == 0);
   joint_angles.leg_rear_right.position_reachable &= (-135.0 <= j1_angle && j1_angle <= 135.0);
-  joint_angles.leg_rear_right.position_reachable &= (-135.0 <= j2_angle && j2_angle <= 135.0);
-  joint_angles.leg_rear_right.position_reachable &= (-135.0 <= j3_angle && j3_angle <= 135.0);
+  joint_angles.leg_rear_right.position_reachable &= (-180.0 <= j2_angle && j2_angle <= 180.0);
+  joint_angles.leg_rear_right.position_reachable &= (-180.0 <= j3_angle && j3_angle <= 180.0);
 
   return joint_angles;
 }
